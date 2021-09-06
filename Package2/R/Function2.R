@@ -11,7 +11,7 @@ largo_lista<-function(list_a,list_b){
     return(FALSE)
 }
 
-#Function for verifying 
+#Function for verifying
 verify_is_vector=function(x){
   if(is.vector(x)==FALSE){
     return(FALSE)
@@ -49,9 +49,13 @@ verify_c=function(x){
   }
 }
 
+a=c(1,2,3)
+b=c(1,2,3)
+d=1
+
 verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
 
-error_list=list("R no es vector", "X no es vector", "R no es numérico", "X no es numérico", "R y X no son del mismo largo", "C debe ser solo un número")
+error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
 cont=1
 for (i in verificator_list){
   if (i==FALSE){
@@ -61,19 +65,22 @@ for (i in verificator_list){
 }
 
 myweights<-function(r, x, c) {
+  library(rdrobust)
+  #library(np) # To perform LLR
+  library(np)
   verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
-  error_list=list("R no es vector", "X no es vector", "R no es numérico", "X no es numérico", "R y X no son del mismo largo", "C debe ser solo un número")
+  error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
   errors=list()
   for (i in verificator_list){
     if (i==FALSE){
       print(error_list[i])
     }
   }
-  
-  
-  
-  
-  
+
+
+
+
+
 
 
   # estimacion de bandwidths
@@ -146,16 +153,13 @@ myweights<-function(r, x, c) {
   w[(nece$id[which.max(nece$estos)]):(nece$id[sum(nece$estos)+which.max(nece$estos)-1])]=send_w$w[!is.na(send_w$w)]
 
 
-#proc.time()-ptm
+  #proc.time()-ptm
 
-# output
-out=list(w=w, h_x=h_x, h_r=h_r, N_ef_w=N_ef_w)
-return(out)
+  # output
+  out=list(w=w, h_x=h_x, h_r=h_r, N_ef_w=N_ef_w)
+  return(out)
 }
-a=c(1,2,3,4)
-b=c(1,2,3)
-d=1
+
 myweights(a,b,d)
 
 verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
-
