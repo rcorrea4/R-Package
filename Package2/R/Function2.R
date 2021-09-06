@@ -1,17 +1,10 @@
 rm(list = ls())
 
+#libraries
 library(rdrobust)
-#library(np) # To perform LLR
 library(np)
 
-largo_lista<-function(list_a,list_b){
-  if (length(list_a)==length(list_b))
-    return(TRUE)
-  else
-    return(FALSE)
-}
-
-#Function for verifying
+#Function to check if the input is a vector
 verify_is_vector=function(x){
   if(is.vector(x)==FALSE){
     return(FALSE)
@@ -21,8 +14,10 @@ verify_is_vector=function(x){
   }
 }
 
+#Function to check if the input is numeric
 verify_vector_numeric=function(x){
   for (i in x){
+
     if (is.numeric(i)==FALSE){
       return(FALSE)
     }
@@ -30,7 +25,7 @@ verify_vector_numeric=function(x){
   return(TRUE)
 }
 
-
+#Function to check if the input length of one vector is equal to the other
 same_length=function(a,b){
   if(length(a)!=length(b)){
     return(FALSE)
@@ -40,6 +35,7 @@ same_length=function(a,b){
   }
 }
 
+#Function to check that the input c is numeric
 verify_c=function(x){
   if(is.numeric(x)==FALSE || length(x)!=1){
     return(FALSE)
@@ -49,38 +45,41 @@ verify_c=function(x){
   }
 }
 
-a=c(1,2,3)
+a=c(1,2,3,4)
 b=c(1,2,3)
 d=1
 
-verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
+#verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
 
-error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
-cont=1
-for (i in verificator_list){
-  if (i==FALSE){
-    print(error_list[cont])
-  }
-  cont=cont+1
-}
+#error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
+#cont=1
+#for (i in verificator_list){
+#  if (i==FALSE){
+#    print(error_list[cont])
+#  }
+#  cont=cont+1
+#}
 
 myweights<-function(r, x, c) {
+  #Libraries for the function
   library(rdrobust)
   #library(np) # To perform LLR
   library(np)
+
+  #Verify input
   verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
   error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
-  errors=list()
+
+  problem=FALSE
   for (i in verificator_list){
     if (i==FALSE){
       print(error_list[i])
+      problem=TRUE
     }
   }
-
-
-
-
-
+  if (problem==TRUE){
+    return("There is an input problem")
+  }
 
 
   # estimacion de bandwidths
@@ -93,7 +92,7 @@ myweights<-function(r, x, c) {
   ######################
   h_x=bw_xr$ybw
   ## 4 casos para bw de r ##
-  # 1: 0,75 de h_r de f(x|r)
+  # : 0,75 de h_r de f(x|r)
   # 2: h_r de f(x|r)
   # 3: 1,25 de h_r de f(x|r)
   # 4: h_r de cat_RD
@@ -123,7 +122,7 @@ myweights<-function(r, x, c) {
   ################################################
   w_si=rep(NaN, sum(condition2)) # para for loop
   for (ii in (which.max(nece$estos)):(sum(nece$estos)+which.max(nece$estos)-1)) {
-    # 1. prepare data
+    #  prepare data
     condition3=(abs((nece$r-nece$r[ii])/h_r)<sqrt(5)) # solo los cercanos a ii
     ker_x=(0.75*(1-0.2*((nece$x[condition3]-nece$x[ii])/h_x)^2)/sqrt(5))*(abs((nece$x[condition3]-nece$x[ii])/h_x)<sqrt(5))*(1/h_x)
     R=cbind(rep(1,sum(condition3)),(nece$r[condition3]-nece$r[ii]))
@@ -160,6 +159,7 @@ myweights<-function(r, x, c) {
   return(out)
 }
 
-myweights(a,b,d)
+myweights(a,a,d)
 
-verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
+#verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
+
