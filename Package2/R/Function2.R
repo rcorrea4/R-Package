@@ -48,19 +48,10 @@ verify_c=function(x){
 a=c(1,2,3,4)
 b=c(1,2,3)
 d=1
+q=c(1,2,TRUE,FALSE,"a")
 
-#verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
 
-#error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
-#cont=1
-#for (i in verificator_list){
-#  if (i==FALSE){
-#    print(error_list[cont])
-#  }
-#  cont=cont+1
-#}
-
-myweights<-function(r, x, c) {
+myweights<-function(r, x, c, n) {
   #Libraries for the function
   library(rdrobust)
   #library(np) # To perform LLR
@@ -68,13 +59,29 @@ myweights<-function(r, x, c) {
 
   #Verify input
   verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
-  error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es num?rico", "R y X no son del mismo largo", "C debe ser solo un n?mero")
+  error_list=list("R no es vector", "X no es vector", "R no es num?rico", "X no es numerico", "R y X no son del mismo largo", "C debe ser solo un numero")
 
   problem=FALSE
+  cont=1
   for (i in verificator_list){
     if (i==FALSE){
-      print(error_list[i])
+      print(error_list[cont])
       problem=TRUE
+    }
+    cont=cont+1
+  }
+  if (problem==TRUE){
+    return("There is an input problem")
+  }
+  if(missing(n)){
+  }
+  else{
+    if(length(r)==n){
+      problem=FALSE
+    }
+    else{
+      problem=TRUE
+      print("N no es igual al largo de los vectores")
     }
   }
   if (problem==TRUE){
@@ -158,8 +165,6 @@ myweights<-function(r, x, c) {
   out=list(w=w, h_x=h_x, h_r=h_r, N_ef_w=N_ef_w)
   return(out)
 }
-
-myweights(a,a,d)
-
-#verificator_list=list(verify_is_vector(a),verify_is_vector(b),verify_vector_numeric(a),verify_vector_numeric(b),same_length(a,b),verify_c(d))
+n=3
+myweights(b,b,d,n)
 
