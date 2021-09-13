@@ -1,6 +1,8 @@
 rm(list = ls())
 
 #libraries
+#install.packages('rdrobust')
+#install.packages('np')
 library(rdrobust)
 library(np)
 
@@ -45,10 +47,6 @@ verify_c=function(x){
   }
 }
 
-a=c(1,2,3,4)
-b=c(1,2,3)
-d=1
-q=c(1,2,TRUE,FALSE,"a")
 
 
 myweights<-function(r, x, c, n) {
@@ -74,6 +72,7 @@ myweights<-function(r, x, c, n) {
     return("There is an input problem")
   }
   if(missing(n)){
+
   }
   else{
     if(length(r)==n){
@@ -165,6 +164,11 @@ myweights<-function(r, x, c, n) {
   out=list(w=w, h_x=h_x, h_r=h_r, N_ef_w=N_ef_w)
   return(out)
 }
+a=c(1,2,3,4)
+b=c(1,2,3)
+d=1
+q=c(1,2,TRUE,FALSE,"a")
+
 n=3
-myweights(b,b,d,n)
+myweights(a,b,d,n)
 
