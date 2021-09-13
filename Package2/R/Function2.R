@@ -51,9 +51,9 @@ verify_c=function(x){
 
 myweights<-function(r, x, c, n) {
   #Libraries for the function
-  library(rdrobust)
+  #library(rdrobust)
   #library(np) # To perform LLR
-  library(np)
+  #library(np)
 
   #Verify input
   verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
