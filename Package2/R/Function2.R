@@ -57,7 +57,7 @@ myweights<-function(r, x, c, n) {
 
   #Verify input
   verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
-  error_list=list("R no es vector", "X debe ser vector de largo mayor o igual a 2", "R no es num?rico", "X no es numerico", "R y X no son del mismo largo", "C debe ser solo un numero")
+  error_list=list("R debe ser vector de largo mayor o igual a 2", "X debe ser vector de largo mayor o igual a 2", "R no es num?rico", "X no es numerico", "R y X no son del mismo largo", "C debe ser solo un numero")
 
   problem=FALSE
   cont=1
