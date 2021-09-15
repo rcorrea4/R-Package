@@ -63,13 +63,14 @@ myweights<-function(r, x, c, n) {
   cont=1
   for (i in verificator_list){
     if (i==FALSE){
-      print(error_list[cont])
+      message(error_list[cont])
       problem=TRUE
     }
     cont=cont+1
   }
   if (problem==TRUE){
-    return("There is an input problem")
+    message('There is an input problem')
+    return('')
   }
   if(missing(n)){
 
@@ -80,11 +81,12 @@ myweights<-function(r, x, c, n) {
     }
     else{
       problem=TRUE
-      print("N no es igual al largo de los vectores")
+      message("N no es igual al largo de los vectores")
     }
   }
   if (problem==TRUE){
-    return("There is an input problem")
+    message('There is an input problem')
+    return('')
   }
 
 
@@ -170,5 +172,5 @@ d=1
 q=c(1,2,TRUE,FALSE,"a")
 
 n=3
-myweights(a,b,d,n)
+
 
