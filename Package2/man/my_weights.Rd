@@ -1,5 +1,5 @@
-\name{myweights}
-\alias{myweights}
+\name{my_weights}
+\alias{my_weights}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Weights data
@@ -10,7 +10,7 @@ Re-weights the data before appliying the discontinual regresion
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-myweights(r,x,c,n)
+my_weights(r,x,c,n)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,11 @@ myweights(r,x,c,n)
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
+  \item{w}{weighter}
+  \item{h_x}{rellenar}
+  \item{h_r}{rellenar}
+  \item{N_ef_w}{rellenar}
+
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}

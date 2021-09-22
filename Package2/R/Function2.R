@@ -49,7 +49,7 @@ verify_c=function(x){
 
 
 
-myweights<-function(r, x, c, n) {
+my_weights<-function(r, x, c, n) {
   #Libraries for the function
   #library(rdrobust)
   #library(np) # To perform LLR
@@ -57,16 +57,16 @@ myweights<-function(r, x, c, n) {
 
   #Verify input
   verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
-  error_list=list("R debe ser vector de largo mayor o igual a 2", "X debe ser vector de largo mayor o igual a 2", "R no es num?rico", "X no es numerico", "R y X no son del mismo largo", "C debe ser solo un numero")
+  error_list=list("R must be a vector with length greater than one", "X must be a vector with length greater than one", "R must be a numeric vector", "X must be a numeric vector", "R and X must be the same length", "C must be numeric of length one")
 
   problem=FALSE
-  cont=1
+  counter=1
   for (i in verificator_list){
     if (i==FALSE){
-      message(error_list[cont])
+      message(error_list[counter])
       problem=TRUE
     }
-    cont=cont+1
+    counter=counter+1
   }
   if (problem==TRUE){
     message('There is an input problem')
@@ -90,7 +90,7 @@ myweights<-function(r, x, c, n) {
   }
 
 
-  # estimacion de bandwidths
+  # estimation of bandwidths
   bw_xr=npcdensbw(x ~ r, cykertype="epanechnikov", cxkertype="epanechnikov") # bw comun a todos
 
   #ptm=proc.time()
