@@ -2,11 +2,11 @@
 \alias{my_weights}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Weights data
+Re-weights of data for regression discontinuity designs
 %%  ~~function to do ... ~~
 }
 \description{
-Re-weights the data before appliying the discontinual regresion
+Re-weights the data before appliying regression discontinuity designs
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
@@ -18,8 +18,8 @@ my_weights(r,x,c,n)
 %%     ~~Describe \code{x} here~~
 }
   \item{x}{vector x}
-  \item{c}{scalar c}
-  \item{n}{scalar n}
+  \item{c}{bandwith c}
+  \item{n}{length of vectors r and x}
 
 }
 \details{
@@ -37,10 +37,11 @@ my_weights(r,x,c,n)
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
 }
-\references{
+\references{García, A. (2020) "A Reweighting Approach for Regression Discontinuity Designs with Discontinuous Density of the Running Variable", Universidad de Los Andes, Chile.
 %% ~put references to the literature/web site here ~
 }
 \author{
+Raimundo Correa D. and Vicente Lehmann C. under the supervision of Andres García E.
 %%  ~~who you are~~
 }
 \note{
@@ -58,6 +59,7 @@ my_weights(r,x,c,n)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
+my_weights(c(1,2),c(1,2),2,2)
 function (x)
 {
   }
