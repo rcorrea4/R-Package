@@ -1,7 +1,7 @@
 \name{my_weights}
 \alias{my_weights}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Re-weights of data for regression discontinuity designs
+\title{Re-weights data for regression discontinuity designs
 %%  ~~function to do ... ~~
 }
 \description{
