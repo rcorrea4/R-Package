@@ -16,10 +16,10 @@ my_weights(r, x, c, n)
   \item{r}{vector r
 %%     ~~Describe \code{r} here~~
 }
-  \item{x}{vector x
+  \item{x}{matrix x
 %%     ~~Describe \code{x} here~~
 }
-  \item{c}{bandwith c
+  \item{c}{cutoff point c
 %%     ~~Describe \code{c} here~~
 }
   \item{n}{length n
@@ -31,9 +31,8 @@ my_weights(r, x, c, n)
 }
 \value{
   \item{w}{weighter}
-  \item{h_x}{rellenar}
-  \item{h_r}{rellenar}
-  \item{N_ef_w}{rellenar}
+  \item{h_x}{bandwith x}
+  \item{h_r}{bandwith r}
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}

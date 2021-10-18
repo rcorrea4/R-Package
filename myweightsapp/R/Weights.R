@@ -15,6 +15,14 @@ verify_is_vector=function(x){
     return(TRUE)
   }
 }
+verify_is_matrix=function(x){
+  if(is.matrix(x)==FALSE || length(x)<2){
+    return(FALSE)
+  }
+  else{
+    return(TRUE)
+  }
+}
 
 #Function to check if the input is numeric
 verify_vector_numeric=function(x){
@@ -29,7 +37,7 @@ verify_vector_numeric=function(x){
 
 #Function to check if the input length of one vector is equal to the other
 same_length=function(a,b){
-  if(length(a)!=length(b)){
+  if(length(a)!=nrow(b)){
     return(FALSE)
   }
   else{
@@ -56,8 +64,19 @@ my_weights<-function(r, x, c, n) {
   #library(np)
 
   #Verify input
-  verificator_list=list(verify_is_vector(r),verify_is_vector(x),verify_vector_numeric(r),verify_vector_numeric(x),same_length(r,x),verify_c(c))
-  error_list=list("R must be a vector with length greater than one", "X must be a vector with length greater than one", "R must be a numeric vector", "X must be a numeric vector", "R and X must be the same length", "C must be numeric of length one")
+  verificator_list=list(verify_is_vector(r),
+                        verify_is_matrix(x),
+                        verify_vector_numeric(r),
+                        verify_vector_numeric(x),
+                        same_length(r,x),
+                        verify_c(c))
+
+  error_list=list("R must be a vector with length greater than one",
+                  "X must be a vector with length greater than one",
+                  "R must be a numeric vector",
+                  "X must be a numeric vector",
+                  "R and X must have the same number of rows",
+                  "C must be numeric of length one")
 
   problem=FALSE
   counter=1
@@ -91,20 +110,28 @@ my_weights<-function(r, x, c, n) {
 
 
   # estimation of bandwidths
-  bw_xr=npcdensbw(x ~ r, cykertype="epanechnikov", cxkertype="epanechnikov") # bw comun a todos
+  bw_xr=npcdensbw(ydat=x,xdat= r, cykertype="epanechnikov", cxkertype="epanechnikov") # bw comun a todos
 
   #ptm=proc.time()
+
+
 
   ######################
   # Preparing data
   ######################
+  #hx es vector hr escalar
   h_x=bw_xr$ybw
+
+  h_r=(bw_xr$xbw)
+
+
+
   ## 4 casos para bw de r ##
   # : 0,75 de h_r de f(x|r)
   # 2: h_r de f(x|r)
   # 3: 1,25 de h_r de f(x|r)
   # 4: h_r de cat_RD
-  h_r=(bw_xr$xbw)
+
   n=length(r)
   w=array(NaN,dim=c(n,1))
   #generar n, largo de r
@@ -123,31 +150,73 @@ my_weights<-function(r, x, c, n) {
   #################################################
   condition2=(abs((r-c)/h_r)<=2*sqrt(5)) # el igual es por si acaso
   id=seq(1:n)
-  nece=data.frame(id=id[condition2], r=r[condition2], x=x[condition2], estos=condition1[condition2])
+
+  #
+  nece=data.frame(id=id[condition2], r=r[condition2], x=x[condition2,], estos=condition1[condition2])
 
   ################################################
   # estimacion del weight solo para los necesarios
   ################################################
   w_si=rep(NaN, sum(condition2)) # para for loop
+
+  #Lista para guardar todos los ker_x y ker_x_result que es luego de la multiplicacion
+  ker_xs=c()
+  ker_xs_results=c()
+
+
   for (ii in (which.max(nece$estos)):(sum(nece$estos)+which.max(nece$estos)-1)) {
+
+    #Ir cambiando ii hasta 3
     #  prepare data
+
     condition3=(abs((nece$r-nece$r[ii])/h_r)<sqrt(5)) # solo los cercanos a ii
-    ker_x=(0.75*(1-0.2*((nece$x[condition3]-nece$x[ii])/h_x)^2)/sqrt(5))*(abs((nece$x[condition3]-nece$x[ii])/h_x)<sqrt(5))*(1/h_x)
+
+    #Crear while y multiplicar kernels
+    count2=1
+    count3=1
+    #ker_xs=c()
+    #ker_xs_results=c()
+    ker_x_result=1
+    for (i in nece){
+      if (count2>2 && count2<ncol(nece)){
+        ker_x=(0.75*(1-0.2*((i[condition3]-i[ii])/h_x[count3])^2)/sqrt(5))*(
+          abs((i[condition3]-i[ii])/h_x[count3])<sqrt(5))*(1/h_x[count3])
+        ker_xs=c(ker_xs,ker_x)
+        ker_x_result=ker_x_result*ker_x
+        count3=count3+1
+      }
+      count2=count2+1
+    }
+    ker_xs_results=c(ker_xs_results,ker_x_result)
+    #ker_x=1
+    #for(i in ker_xs){
+    #  if (!is.na(i)){
+    #    print(i)
+    #    ker_x=ker_x*i
+    #  }
+
+    #}
+
+    #Ker_x = multiplicaci?n de los Ker_x
+
     R=cbind(rep(1,sum(condition3)),(nece$r[condition3]-nece$r[ii]))
     ker_r=(0.75*(1-0.2*((nece$r[condition3]-nece$r[ii])/h_r)^2)/sqrt(5))
     # 2. contrafactual conditional density through LLR:
     GinvC=chol2inv(chol(crossprod(sqrt(ker_r)*R)))
-    num=c(1, 0)%*%GinvC%*%crossprod(R*ker_r,ker_x) # sin limite inferior
+    #Se ocup? el ker_x_result para la formula de abajo
+    num=c(1, 0)%*%GinvC%*%crossprod(R*ker_r,ker_x_result) # sin limite inferior
     # 3. empirical conditional density through LLR:
+
     if (nece$r[ii]<c) {
       ker_rL=(0.75*(1-0.2*((nece$r[condition3]-nece$r[ii])/h_r)^2)/sqrt(5))*(nece$r[condition3]<c)
       GinvL=chol2inv(chol(crossprod(sqrt(ker_rL)*R)))
-      den2=c(1, 0)%*%GinvL%*%crossprod(R*ker_rL,ker_x)
+      den2=c(1, 0)%*%GinvL%*%crossprod(R*ker_rL,ker_x_result)
       den=ifelse(abs(den2)<0.0001,0.0001,den2) # si es muy chico
     } else {
       ker_rR=(0.75*(1-0.2*((nece$r[condition3]-nece$r[ii])/h_r)^2)/sqrt(5))*(nece$r[condition3]>=c)
       GinvR=chol2inv(chol(crossprod(sqrt(ker_rR)*R)))
-      den2=c(1, 0)%*%GinvR%*%crossprod(R*ker_rR,ker_x)
+      #La linea tira error para ii=3
+      den2=c(1, 0)%*%GinvR%*%crossprod(R*ker_rR,ker_x_result)
       den=ifelse(abs(den2)<0.0001,0.0001,den2) # si es muy chico
     }
     # 4. weight estimation
@@ -163,14 +232,14 @@ my_weights<-function(r, x, c, n) {
   #proc.time()-ptm
 
   # output
+  plot(r,w)
   out=list(w=w, h_x=h_x, h_r=h_r, N_ef_w=N_ef_w)
   return(out)
 }
-a=c(1,2,3,4)
-b=c(1,2,3)
-d=1
-q=c(1,2,TRUE,FALSE,"a")
-
-n=3
+x=cbind(rnorm(100),rnorm(100,3))
+#r=c(1,2,3)
+r=rnorm(100,0,6)
+c=0
+my_weights(r,x,c)
 
 
