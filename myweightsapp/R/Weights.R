@@ -86,6 +86,7 @@ verify_is_factor=function(r){
 
 my_weights<-function(r, x, c) {
 
+  library(np)
   ri=cbind(r)
   xi=cbind(x)
   #Libraries for the function
