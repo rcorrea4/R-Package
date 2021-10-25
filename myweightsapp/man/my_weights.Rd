@@ -9,7 +9,7 @@ my_weights re-weightes data that will be used in a regression discontinuity desi
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-my_weights(r, x, c, n)
+my_weights(r, x, c)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,15 +22,13 @@ my_weights(r, x, c, n)
   \item{c}{scalar c. Represents the cutoff point that indicates from which value the sample receives or does not receive treatment.
 %%     ~~Describe \code{c} here~~
 }
-  \item{n}{optional scalar n. Represents the number of rows of r and x.
-%%     ~~Describe \code{n} here~~
-}
+
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{my_weights returns a list of weighters for each row of the sample. Multiplying these values with the original data, a continuous density sample is obtained. With this sample it is posible to make interpretations of the variable of interest after the discontinuous regression.
-  \item{w}{list of the weighters values}
+\value{my_weights returns a weight for each row of the sample. Multiplying these values with the original data, a continuous density sample is obtained. With this sample it is posible to make interpretations of the variable of interest after the discontinuous regression.
+  \item{w}{list of the weights values}
   \item{h_x}{bandwith x}
   \item{h_r}{bandwith r}
 %%  ~Describe the value returned
@@ -61,10 +59,8 @@ Raimundo Correa D. and Vicente Lehmann C. under the supervision of Andres Garcia
 x=cbind(rnorm(100),rnorm(100,2))
 r=rnorm(100,0,6)
 c=0
-n=100
 
 my_weights(r,x,c)
-my_weights(r,x,c,n)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

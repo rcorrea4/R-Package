@@ -8,7 +8,7 @@ library(np)
 
 #Function to check if the input is a vector
 verify_is_vector=function(x){
-  if(is.vector(x)==FALSE || length(x)<2){
+  if(is.matrix(x)==FALSE || nrow(x)<2){
     return(FALSE)
   }
   else{
@@ -16,12 +16,18 @@ verify_is_vector=function(x){
   }
 }
 verify_is_matrix=function(x){
-  if(is.matrix(x)==FALSE || length(x)<2){
-    return(FALSE)
+  if(is.vector(x)==FALSE || length(x)<2){
+    if(is.matrix(x)==FALSE || nrow(x)<2){
+      return(FALSE)
+    }
+    else{
+      return(TRUE)
+    }
   }
   else{
     return(TRUE)
   }
+
 }
 
 #Function to check if the input is numeric
@@ -37,7 +43,7 @@ verify_vector_numeric=function(x){
 
 #Function to check if the input length of one vector is equal to the other
 same_length=function(a,b){
-  if(length(a)!=nrow(b)){
+  if(nrow(a)!=nrow(b)){
     return(FALSE)
   }
   else{
@@ -55,28 +61,83 @@ verify_c=function(x){
   }
 }
 
+verify_c_range=function(r,c){
+  if (c<min(r)||c>max(r)){
+    return(FALSE)
+  }
+  else{
+    return(TRUE)
+  }
+}
+
+verify_is_factor=function(r){
+  if(is.factor(r)){
+    return(FALSE)
+  }
+  else{
+    return(TRUE)
+  }
+}
 
 
-my_weights<-function(r, x, c, n) {
+
+
+
+
+my_weights<-function(r, x, c) {
+
+  ri=cbind(r)
+  xi=cbind(x)
   #Libraries for the function
   #library(rdrobust)
   #library(np) # To perform LLR
   #library(np)
 
   #Verify input
-  verificator_list=list(verify_is_vector(r),
-                        verify_is_matrix(x),
-                        verify_vector_numeric(r),
-                        verify_vector_numeric(x),
-                        same_length(r,x),
-                        verify_c(c))
+  count5=1
+  for (i in ri){
+    if (is.nan(i)||is.na(i)){
+      ri=cbind(ri[-count5])
+      xi=cbind(xi[-count5,])
+    }
+    count5=count5+1
+  }
+  count6=1
+  while(count6<ncol(xi)){
+    count7=1
+    for (i in xi[,count6]){
+      if (is.nan(i)||is.na(i)){
+        ri=cbind(ri[-count7])
+        xi=cbind(xi[-count7,])
+      }
+      count7=count7+1
+    }
+    count6=count6+1
+  }
+
+  verificator_list=list(verify_is_vector(ri),
+                        verify_is_matrix(xi),
+                        verify_vector_numeric(ri),
+                        verify_vector_numeric(xi),
+                        same_length(ri,xi),
+                        verify_c(c),
+                        verify_c_range(ri,c),
+                        verify_is_factor(r))
+
+
+  #verificar que r este en el rango
 
   error_list=list("R must be a vector with length greater than one",
-                  "X must be a vector with length greater than one",
+                  "X must be a matrix with length greater than one",
                   "R must be a numeric vector",
-                  "X must be a numeric vector",
+                  "X must be a numeric matrix",
                   "R and X must have the same number of rows",
-                  "C must be numeric of length one")
+                  "C must be numeric of length one",
+                  "C must be in the range of R",
+                  "R must be a continous variable")
+  r=ri
+  x=xi
+
 
   problem=FALSE
   counter=1
@@ -91,18 +152,7 @@ my_weights<-function(r, x, c, n) {
     message('There is an input problem')
     return('')
   }
-  if(missing(n)){
 
-  }
-  else{
-    if(length(r)==n){
-      problem=FALSE
-    }
-    else{
-      problem=TRUE
-      message("N no es igual al largo de los vectores")
-    }
-  }
   if (problem==TRUE){
     message('There is an input problem')
     return('')
@@ -122,7 +172,9 @@ my_weights<-function(r, x, c, n) {
   #hx es vector hr escalar
   h_x=bw_xr$ybw
 
-  h_r=(bw_xr$xbw)
+  h_r=min(bw_xr$xbw,1000)#agregar en recomendaciones
+
+
 
 
 
@@ -148,15 +200,29 @@ my_weights<-function(r, x, c, n) {
   #################################################
   # para los weights no necesitamos todos los datos
   #################################################
+  count4=1
   condition2=(abs((r-c)/h_r)<=2*sqrt(5)) # el igual es por si acaso
+  for (i in condition2){
+    if(is.na(i)){
+      condition2[count4]=TRUE
+    }
+    count4=count4+1
+  }
   id=seq(1:n)
 
   #
+  if(ncol(x)==1){
+    nece=data.frame(id=id[condition2], r=r[condition2], x=x[condition2], estos=condition1[condition2])
+
+  }
   nece=data.frame(id=id[condition2], r=r[condition2], x=x[condition2,], estos=condition1[condition2])
 
   ################################################
   # estimacion del weight solo para los necesarios
   ################################################
+
+
+
   w_si=rep(NaN, sum(condition2)) # para for loop
 
   #Lista para guardar todos los ker_x y ker_x_result que es luego de la multiplicacion
@@ -233,13 +299,8 @@ my_weights<-function(r, x, c, n) {
 
   # output
   plot(r,w)
-  out=list(w=w, h_x=h_x, h_r=h_r, N_ef_w=N_ef_w)
+  out=list(w=w, h_x=h_x, h_r=h_r)
   return(out)
 }
-x=cbind(rnorm(100),rnorm(100,3))
-#r=c(1,2,3)
-r=rnorm(100,0,6)
-c=0
-my_weights(r,x,c)
 
 
